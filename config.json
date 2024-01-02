@@ -1,0 +1,4 @@
+{
+    "databaseURL": "mongodb://db:27017/mongo",
+    "PORT": 3000
+}

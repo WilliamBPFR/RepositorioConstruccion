@@ -1,0 +1,20 @@
+[
+    {
+        "title": "Juego",
+        "email": "Juego de pelota",
+        "message": "palomo",
+        "fecha": "08/07/2023"
+    },
+    {
+        "title": "Tarea",
+        "email": "Tendencias",
+        "message": "Hazla antes de que te quemes",
+        "fecha": "08/08/2023"
+    },
+    {
+        "title": "Examen",
+        "email": "Aseguramiento",
+        "message": "Examen largo, urgente.",
+        "fecha": "06/01/2023"
+    }
+]

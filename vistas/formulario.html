@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <title>Formulario de Recordatorios</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Ingrese los datos del recordatorio</h1>
+    <form id="myform" method="post" action="/posted-new-reminder">
+      <input style="display:none" id="iddatos" name="iddatos"></input>
+      <div class="form-group">
+        <label for="titulo">Recordatorio:</label>
+        <input type="text" class="form-control" id="titulo" name="titulo"required>
+      </div>
+      <div class="form-group">
+        <label for="descripcion">Descripción:</label>
+        <textarea class="form-control" id="descripcion" rows="3" name = "descripcion"required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="fecha">Fecha de recordatorio:</label>
+        <input type="date" class="form-control" id="fecha" name = "fecha" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Correo electrónico:</label>
+        <input type="email" class="form-control" id="email" name = "email" required>
+      </div>
+      <button  class="btn btn-primary" name="submit" id="env">Enviar</button>
+
+    <div class="container">
+      <button class="btn btn-dark btn-back" onclick="goBack()">Atrás</button>
+    </div>
+  
+    <script>
+      function goBack() {
+        window.history.back();
+      }
+    </script>
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    
+      <script>
+        $(document).ready(function () {
+          $('#atrasBtn').click(function () {
+            window.location.href = "index.html";
+          });
+        });
+      </script>
+
+      <script src="scripts/load-reminder-formulario.js"></script>
+
+    </form>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <title>Historial de Recordatorios</title>
+  <style>
+    .container {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .btn-back {
+      margin-top: 20px;
+    }
+    .list-group-item {
+      display: flex;
+      align-items: center;
+    }
+    .list-group-item:hover{
+      background-color: lightgray;
+      cursor: pointer;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+    .recordatorio-text {
+      flex-grow: 1;
+    }
+    .btn-group {
+      margin-left: auto;
+    }
+    .btn-action {
+      margin-left: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Historial de Recordatorios</h1>
+
+    <ul id="lista" class="list-group">
+      <script src="./scripts/load-historial.js"></script>
+      <li class="list-group-item">Recordatorio 1</li>
+      <!--<li class="list-group-item">Recordatorio 2</li> -->
+      <!--<li class="list-group-item">Recordatorio 3</li> -->
+      <!--<li class="list-group-item">Recordatorio 4</li> -->
+    </ul>
+
+    <button class="btn btn-primary btn-back" onclick="goBack()">Volver</button>
+  </div>
+
+  <script>
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

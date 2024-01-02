@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <title>Recordatorios MV</title>
+  <style>
+    .container {
+      text-align: center;
+      margin-top: 150px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>
+    Bienvenidos a la aplicación de recordatorios
+  </h1>
+  <h2>
+    ¿Qué desea hacer?
+  </h2>
+  <div class="container">
+    <button class="btn btn-primary" id="recordatoriosBtn">Recordatorios</button>
+    <button class="btn btn-primary" id="historialBtn">Historial</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      $('#recordatoriosBtn').click(function () {
+        window.location.href = "formulario.html";
+      });
+
+      $('#historialBtn').click(function () {
+        window.location.href = "historial.html";
+      });
+    });
+  </script>
+</body>
+
+</html>
