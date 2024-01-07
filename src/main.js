@@ -7,9 +7,12 @@ const dotenv = require('dotenv')
 dotenv.config();
 const { graphql, buildSchema } = require('graphql');
 const { graphqlHTTP } = require('express-graphql');
-const Reminder = require('./../db/database')
+//const Reminder = require('./../db/database')
 const app = express()
 app.set('view engine', 'html')
+const {PrismaClient} = require('@prisma/client')
+
+const prisma = new PrismaClient()
 //app.set('view engine', 'ejs');
 
 app.use(express.static(path.join(__dirname, './../vistas')))
@@ -23,21 +26,35 @@ app.set('views', path.join(__dirname, 'vistas'))
 
 // Define your GraphQL schema
 const schema = buildSchema(`
+
+  scalar DateTime
   type Reminder {
     _id: ID!
     title: String!
     email: String!
     message: String!
     fecha: String!
+    usuario: Usuario!
+  }
+
+  type Usuario {
+    id_usuario: Int!
+    nombre: String!
+    email: String!
+    hash_contrasena: String!
+    fecha_nacimiento: DateTime
+    fecha_creacion: DateTime!
+    recordatorios: [Reminder!]!
   }
 
   type Query {
     getReminder(_id: ID!): Reminder
     getAllReminders: [Reminder]
+    getUser(id_usuario: Int!): Usuario
   }
 
   type Mutation {
-    createReminder(title: String!, email: String!, message: String!, fecha: String!): Reminder
+    createReminder(title: String!, email: String!, message: String!, fecha: String!, id_usuario: Int!): Reminder
     updateReminder(_id: ID!, title: String!, email: String!, message: String!, fecha: String!): Reminder
     deleteReminder(_id: ID!): Boolean
   }
@@ -46,50 +63,50 @@ const schema = buildSchema(`
 // Define your resolvers
 const root = {
   getReminder: async ({ _id }) => {
-    try {
-      const reminder = await Reminder.findById(_id);
-      return reminder;
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+    return await prisma.recordatorio.findUnique({
+      where: { _id },
+      include: { usuario: true },
+    });
   },
   getAllReminders: async () => {
-    try {
-      const reminders = await Reminder.find({});
-      return reminders;
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+    return await prisma.recordatorio.findMany({
+      include: { usuario: true },
+    });
   },
-  createReminder: async ({ title, email, message, fecha }) => {
-    try {
-      const reminder = new Reminder({ title, email, message, fecha });
-      const savedReminder = await reminder.save();
-      return savedReminder;
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+  getUser: async ({ id_usuario }) => {
+    return await prisma.usuario.findUnique({
+      where: { id_usuario },
+      include: { recordatorios: true },
+    });
+  },
+  createReminder: async ({ title, email, message, fecha, id_usuario }) => {
+    const reminder = await prisma.recordatorio.create({
+      data: {
+        title,
+        email,
+        message,
+        fecha,
+        usuario: { connect: { id: id_usuario } },
+      },
+    });
+    return reminder;
   },
   updateReminder: async ({ _id, title, email, message, fecha }) => {
-    try {
-      const updatedReminder = await Reminder.findByIdAndUpdate(_id, { title, email, message, fecha });
-      return updatedReminder;
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+    const reminder = await prisma.recordatorio.update({
+      where: { _id },
+      data: {
+        title,
+        email,
+        message,
+        fecha,
+      },
+    });
+    return reminder;
   },
   deleteReminder: async ({ _id }) => {
-    try {
-      await Reminder.findByIdAndDelete(_id);
-      return true;
-    } catch (err) {
-      console.log(err);
-      throw err;
-    }
+    return await prisma.recordatorio.delete({
+      where: { _id },
+    });
   },
 };
 
@@ -162,22 +179,24 @@ async function sendEmail (asunto, mensaje, destinatario) {
 // Crear o actualizar un recordatorio
 app.post('/posted-new-reminder', async (req, res, next) => {
   const { titulo, email, descripcion, fecha, id } = req.body;
+  console.log(req.body);
   try {
     if (id === undefined) {
       // Crear nuevo recordatorio
-      const result = await graphql(schema, `mutation { createReminder(title: "${titulo}", email: "${email}", message: "${descripcion}", fecha: "${fecha}") { _id } }`, root);
-      console.log('Nuevo recordatorio creado:', result.data.createReminder._id);
+      const result = await graphql(schema, `mutation { createReminder(title: "${titulo}", email: "${email}", message: "${descripcion}", fecha: "${fecha}", id_usuario: ${id}) { _id } }`, root);
+      console.log('Nuevo recordatorio creado:', result.data.createReminder);
       sendEmail(titulo, descripcion, email);
     } else {
       // Actualizar un recordatorio existente
-      const result = await graphql(schema, `mutation { updateReminder(_id: "${id}", title: "${titulo}", email: "${email}", message: "${descripcion}", fecha: "${fecha}") { _id } }`, root);
+      const result = await graphql(schema, `mutation { updateReminder(_id: "${id}", title: "${titulo}", email: "${email}", message: "${descripcion}", fecha: "${fecha}" ) { _id } }`, root);
       console.log('Recordatorio actualizado:', result.data.updateReminder._id);
     }
+    
+    res.redirect('historial.html');
   } catch (err) {
     console.log(err);
     next(err);
   }
-  res.redirect('historial.html');
 });
 
 app.get('/', (req, res, next) => {
@@ -187,7 +206,9 @@ app.get('/', (req, res, next) => {
 // Obtener todos los recordatorios
 app.get('/historial-data', async (req, res, next) => {
   try {
+    
     const result = await graphql(schema, `query { getAllReminders { _id, title, email, message, fecha } }`, root);
+    
     res.json(result.data.getAllReminders);
   } catch (err) {
     console.log(err);

@@ -18,7 +18,7 @@ model Usuario {
   fecha_nacimiento DateTime
   fecha_creacion   DateTime        @default(now())
   Recordatorios    Recordatorios[]
-}
+}a
 
 model Recordatorios {
   id_recordatorio    Int      @id @default(autoincrement())
