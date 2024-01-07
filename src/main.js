@@ -79,6 +79,39 @@ const root = {
       include: { recordatorios: true },
     });
   },
+  getAllUsers: async () => {
+    return await prisma.usuario.findMany({
+      include: { recordatorios: true },
+    });
+  },
+  CreateUser: async ({ nombre, email, hash_contrasena, fecha_nacimiento }) => {
+    const user = await prisma.usuario.create({
+      data: {
+        nombre,
+        email,
+        hash_contrasena,
+        fecha_nacimiento,
+      },
+    });
+    return user;
+  },
+  updateUser: async ({ id_usuario, nombre, email, hash_contrasena, fecha_nacimiento }) => {
+    const user = await prisma.usuario.update({
+      where: { id_usuario },
+      data: {
+        nombre,
+        email,
+        hash_contrasena,
+        fecha_nacimiento,
+      },
+    });
+    return user;
+  },
+  deleteUser: async ({ id_usuario }) => {
+    return await prisma.usuario.delete({
+      where: { id_usuario },
+    });
+  },
   createReminder: async ({ title, email, message, fecha, id_usuario }) => {
     const reminder = await prisma.recordatorio.create({
       data: {
