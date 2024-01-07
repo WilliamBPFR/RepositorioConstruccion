@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <title>Historial de Recordatorios</title>
   <style>
@@ -33,12 +34,20 @@
     .btn-action {
       margin-left: 5px;
     }
+
+    body {
+        background-color: #E0CAFB; 
+    }
+
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Historial de Recordatorios</h1>
+  <div class="container-custom">
+    <div class="d-flex align-items-center" style="margin: 20px;">
+      <img src="images/reloj.png" alt="Imagen" class="mr-2" style="width: 70px; height: 70px;">
+      <h1>Historial de recordatorios</h1>
+      </div>
 
     <ul id="lista" class="list-group">
       <script src="./scripts/load-historial.js"></script>
@@ -48,7 +57,7 @@
       <!--<li class="list-group-item">Recordatorio 4</li> -->
     </ul>
 
-    <button class="btn btn-primary btn-back" onclick="goBack()">Volver</button>
+    <button class="btn btn-danger btn-back" onclick="goBack()">Volver</button>
   </div>
 
   <script>

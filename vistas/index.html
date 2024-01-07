@@ -4,27 +4,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <title>Recordatorios MV</title>
   <style>
-    .container {
-      text-align: center;
-      margin-top: 150px;
+    body {
+        background-color: #E6D2FF; 
     }
-  </style>
+</style>
 </head>
 
 <body>
-  <h1>
-    Bienvenidos a la aplicación de recordatorios
-  </h1>
-  <h2>
-    ¿Qué desea hacer?
-  </h2>
-  <div class="container">
-    <button class="btn btn-primary" id="recordatoriosBtn">Recordatorios</button>
-    <button class="btn btn-primary" id="historialBtn">Historial</button>
+
+  <div class="d-flex  flex-column align-items-center text-center">
+    <div class="d-flex flex-row align-items-center text-center">
+      <div>
+        <img src="images/hand-morena.png" alt="Imagen" style="width: 100px; height: 100px;">
+      </div>
+      <div class="d-flex flex-column align-items-center text-center" style=" margin-top: 50px;">
+        <h1 style="color:black; font-weight:bolder;">
+          Bienvenido
+        </h1>
+        <h2 style="color:black; font-weight: 400;">
+          ¿Qué desea hacer?
+        </h2>
+      </div>
+    </div>
+  
+    <div class="container-transparent d-flex flex-column align-items-center text-center" style="padding: 50px;">
+      <div class="d-flex flex-row">
+  
+        <div class=" d-flex flex-column align-items-center text-center" style="background-color: white; padding: 30px; height: 344px; border-radius: 20px; box-shadow: #E0CAFB; margin: 10px;" >
+          <img src="images/bell.png" alt="Imagen" class="mr-2" style="width: 140px; height: 140px;">
+          <button class="btn" id="recordatoriosBtn" style="font-weight: 500"> Crear Recordatorio</button>
+        </div>
+  
+        <div class="d-flex flex-column align-items-center text-center" style="background-color: white; padding: 30px; height: 344px; border-radius: 20px; box-shadow: #E0CAFB; margin: 10px;" >
+          <img src="images/reloj.png" alt="Imagen" class="mr-2" style="width: 140px; height: 140px;">
+          <button class="btn" id="historialBtn" style="font-weight: 500;">Ver Historial</button>
+        </div>
+      </div>
+    </div>
   </div>
+
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
