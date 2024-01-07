@@ -1,0 +1,31 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id_usuario       Int             @id @default(autoincrement())
+  nombre           String
+  email            String          @unique
+  hash_contrasena  String
+  fecha_nacimiento DateTime
+  fecha_creacion   DateTime        @default(now())
+  Recordatorios    Recordatorios[]
+}
+
+model Recordatorios {
+  id_recordatorio    Int      @id @default(autoincrement())
+  titulo_nota        String
+  mensaje_nota       String   @db.VarChar(1000)
+  fecha_recordatorio DateTime
+  fecha_creacion     DateTime @default(now())
+  id_usuario         Int
+  Usuario            Usuario  @relation(fields: [id_usuario], references: [id_usuario])
+}
