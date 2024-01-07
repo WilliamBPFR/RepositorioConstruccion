@@ -4,36 +4,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <title>Formulario de Recordatorios</title>
+  <style>
+    body {
+        background-color: #E6D2FF; 
+    }
+</style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Ingrese los datos del recordatorio</h1>
+  <div class="container-custom">
+    <div class="d-flex align-items-center">
+      <img src="images/bell.png" alt="Imagen" class="mr-2" style="width: 70px; height: 70px;">
+      <h1>Crear recordatorio</h1>
+  </div>
     <form id="myform" method="post" action="/posted-new-reminder">
       <input style="display:none" id="iddatos" name="iddatos"></input>
       <div class="form-group">
-        <label for="titulo">Recordatorio:</label>
-        <input type="text" class="form-control" id="titulo" name="titulo"required>
+        <label for="titulo">Titulo:</label>
+        <input type="text" class="form-control mb-2" style="border-radius:10px;" id="titulo" name="titulo"required>
       </div>
       <div class="form-group">
         <label for="descripcion">Descripción:</label>
-        <textarea class="form-control" id="descripcion" rows="3" name = "descripcion"required></textarea>
+        <textarea class="form-control mb-2" style="border-radius:10px" id="descripcion" rows="3" name = "descripcion"required></textarea>
       </div>
       <div class="form-group">
         <label for="fecha">Fecha de recordatorio:</label>
-        <input type="date" class="form-control" id="fecha" name = "fecha" required>
+        <input type="date" class="form-control mb-2" style="border-radius:10px" id="fecha" name = "fecha" required>
       </div>
       <div class="form-group">
         <label for="email">Correo electrónico:</label>
-        <input type="email" class="form-control" id="email" name = "email" required>
+        <input type="email" class="form-control mb-2" style="border-radius:10px" id="email" name = "email" required>
       </div>
-      <button  class="btn btn-primary" name="submit" id="env">Enviar</button>
-
-    <div class="container">
-      <button class="btn btn-dark btn-back" onclick="goBack()">Atrás</button>
-    </div>
+      <button  class="btn btn-dark btn-lg" style="border-radius: 20px; --bs-btn-padding-x: 20px;" name="submit" id="env">Enviar</button>
+      <button class="btn btn-danger btn-back btn-lg" style="border-radius: 20px" onclick="goBack()">Atrás</button>
   
     <script>
       function goBack() {
