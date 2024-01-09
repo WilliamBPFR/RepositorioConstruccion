@@ -1,19 +1,24 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable semi */
+/* eslint-disable camelcase */
 const express = require('express')
 const nodemailer = require('nodemailer')
 const path = require('path')
 const bodyParser = require('body-parser')
 const config = require('./../config')
 const dotenv = require('dotenv')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 dotenv.config();
 const { graphql, buildSchema } = require('graphql');
 const { graphqlHTTP } = require('express-graphql');
-//const Reminder = require('./../db/database')
+// const Reminder = require('./../db/database')
 const app = express()
 app.set('view engine', 'html')
-const {PrismaClient} = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
-//app.set('view engine', 'ejs');
+// app.set('view engine', 'ejs');
 
 app.use(express.static(path.join(__dirname, './../vistas')))
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -55,6 +60,7 @@ const schema = buildSchema(`
 
   type Mutation {
     createReminder(title: String!, email: String!, message: String!, fecha: String!, id_usuario: Int!): Reminder
+    createUser(nombre: String!, email: String!, hash_contrasena: String!, fecha_nacimiento: DateTime!): Usuario
     updateReminder(_id: ID!, title: String!, email: String!, message: String!, fecha: String!): Reminder
     deleteReminder(_id: ID!): Boolean
   }
@@ -84,7 +90,7 @@ const root = {
       include: { recordatorios: true },
     });
   },
-  CreateUser: async ({ nombre, email, hash_contrasena, fecha_nacimiento }) => {
+  createUser: async ({ nombre, email, hash_contrasena, fecha_nacimiento }) => {
     const user = await prisma.usuario.create({
       data: {
         nombre,
@@ -145,7 +151,7 @@ const root = {
 
 // GraphQL endpoint
 app.use('/graphql', graphqlHTTP({
-  schema: schema,
+  schema,
   rootValue: root,
   graphiql: true, // Enable GraphiQL for testing
 }));
@@ -193,7 +199,7 @@ const transporter = nodemailer.createTransport({
 })
 
 // Función para enviar el correo electrónico
-async function sendEmail (asunto, mensaje, destinatario) {
+async function sendEmail(asunto, mensaje, destinatario) {
   const mailOptions = {
     from: process.env.USER,
     to: destinatario,
@@ -224,7 +230,7 @@ app.post('/posted-new-reminder', async (req, res, next) => {
       const result = await graphql(schema, `mutation { updateReminder(_id: "${id}", title: "${titulo}", email: "${email}", message: "${descripcion}", fecha: "${fecha}" ) { _id } }`, root);
       console.log('Recordatorio actualizado:', result.data.updateReminder._id);
     }
-    
+
     res.redirect('historial.html');
   } catch (err) {
     console.log(err);
@@ -239,9 +245,8 @@ app.get('/', (req, res, next) => {
 // Obtener todos los recordatorios
 app.get('/historial-data', async (req, res, next) => {
   try {
-    
-    const result = await graphql(schema, `query { getAllReminders { _id, title, email, message, fecha } }`, root);
-    
+    const result = await graphql(schema, 'query { getAllReminders { _id, title, email, message, fecha } }', root);
+
     res.json(result.data.getAllReminders);
   } catch (err) {
     console.log(err);
@@ -254,7 +259,7 @@ app.get('/cargar-recordatorio/:_id', async (req, res, next) => {
   try {
     const { _id } = req.params;
     const result = await graphql(schema, `query { getReminder(_id: "${_id}") { _id } }`, root);
-    console.log("llegue");
+    console.log('llegue');
     const encodedData = encodeURIComponent(JSON.stringify(result.data.getReminder));
     const url = '/cargar-recordatorio/' + _id;
     const redirectUrl = req.originalUrl.replace(url, '');
@@ -265,7 +270,108 @@ app.get('/cargar-recordatorio/:_id', async (req, res, next) => {
   }
 });
 
+// registro
+app.post('/register', async (req, res) => {
+  try {
+    const { nombre, email, contrasena, fecha_nacimiento } = req.body;
 
+    // Validar los datos de entrada
+    if (!nombre || !email || !contrasena || !fecha_nacimiento) {
+      throw new Error('Faltan datos necesarios para el registro');
+    }
+
+    console.log(fecha_nacimiento)
+
+    const hash_contrasena = await bcrypt.hash(contrasena, 10);
+
+    // Usar la mutación GraphQL para crear el usuario
+    const mutation = `
+      mutation {
+         createUser(nombre: "${nombre}", email: "${email}", hash_contrasena: "${hash_contrasena}", fecha_nacimiento: "${fecha_nacimiento}") {
+          id_usuario
+        }
+      }
+    `;
+
+    const result = await graphql(schema, mutation, root);
+    if (result.errors) {
+      throw new Error('Error GraphQL al crear el usuario: ' + JSON.stringify(result.errors));
+    }
+
+    res.json({ message: 'Usuario creado con éxito', usuario: result.data.CreateUser });
+  } catch (error) {
+    console.error(error);
+    let errorMessage = 'Error en el registro de usuario';
+
+    if (error.message.startsWith('Error GraphQL')) {
+      errorMessage = error.message
+    } else if (error.message.includes('Faltan datos necesarios')) {
+      errorMessage = error.message
+    }
+
+    res.status(500).send(errorMessage);
+  }
+});
+
+// login
+app.post('/login', async (req, res) => {
+  try {
+    const { email, contrasena } = req.body;
+    const usuario = await prisma.usuario.findUnique({
+      where: { email }
+    });
+
+    if (usuario && await bcrypt.compare(contrasena, usuario.hash_contrasena)) {
+      const token = jwt.sign(
+        { id_usuario: usuario.id_usuario, email: usuario.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+
+      res.json({
+        message: 'Login exitoso',
+        token,
+        usuario: {
+          id: usuario.id_usuario,
+          nombre: usuario.nombre,
+          email: usuario.email
+        }
+      });
+    } else {
+      res.status(401).send('Credenciales inválidas');
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// Middleware para token y ruta
+const verificarToken = (req, res, next) => {
+  const bearerHeader = req.headers.authorization;
+
+  if (typeof bearerHeader !== 'undefined') {
+    const bearer = bearerHeader.split(' ');
+    const bearerToken = bearer[1];
+
+    try {
+      // Verificar el token
+      const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET);
+      req.usuario = decoded;
+      next()
+    } catch (error) {
+      res.status(403).json({ message: 'Token inválido o expirado' });
+    }
+  } else {
+    res.status(401).json({ message: 'Acceso no autorizado' });
+  }
+};
+
+// ejemplo de ruta privada
+
+// app.get('/ruta-protegida', verificarToken, (req, res) => {
+//    Ruta protegida
+//  res.send('Acceso concedido a la ruta protegida');
+// });
 
 /* app.route("/historial.html").get(async (req, res, next) => {
     try {
@@ -317,4 +423,4 @@ app.get('/cargar-recordatorio/:_id', async (req, res, next) => {
     fecha: Date,
   }); */
 
-  module.exports = app;
+module.exports = app;

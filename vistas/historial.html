@@ -12,33 +12,38 @@
       text-align: center;
       margin-top: 50px;
     }
+
     .btn-back {
       margin-top: 20px;
     }
+
     .list-group-item {
       display: flex;
       align-items: center;
     }
-    .list-group-item:hover{
+
+    .list-group-item:hover {
       background-color: lightgray;
       cursor: pointer;
       text-decoration: underline;
       font-weight: bold;
     }
+
     .recordatorio-text {
       flex-grow: 1;
     }
+
     .btn-group {
       margin-left: auto;
     }
+
     .btn-action {
       margin-left: 5px;
     }
 
     body {
-        background-color: #E0CAFB; 
+      background-color: #E0CAFB;
     }
-
   </style>
 </head>
 
@@ -47,7 +52,7 @@
     <div class="d-flex align-items-center" style="margin: 20px;">
       <img src="images/reloj.png" alt="Imagen" class="mr-2" style="width: 70px; height: 70px;">
       <h1>Historial de recordatorios</h1>
-      </div>
+    </div>
 
     <ul id="lista" class="list-group">
       <script src="./scripts/load-historial.js"></script>
@@ -59,6 +64,8 @@
 
     <button class="btn btn-danger btn-back" onclick="goBack()">Volver</button>
   </div>
+  <script src="middleware/middleware.js"></script>
+
 
   <script>
     function goBack() {
