@@ -21,7 +21,6 @@
       <h1>Crear recordatorio</h1>
     </div>
     <form id="myform" method="post" action="/posted-new-reminder">
-      <input style="display:none" id="iddatos" name="iddatos"></input>
       <div class="form-group">
         <label for="titulo">Titulo:</label>
         <input type="text" class="form-control mb-2" style="border-radius:10px;" id="titulo" name="titulo" required>
@@ -39,10 +38,10 @@
         <label for="email">Correo electrónico:</label>
         <input type="email" class="form-control mb-2" style="border-radius:10px" id="email" name="email" required>
       </div>
-      <button class="btn btn-dark btn-lg" style="border-radius: 20px; --bs-btn-padding-x: 20px;" name="submit"
+      <button class="btn btn-dark btn-lg" style="border-radius: 20px; --bs-btn-padding-x: 20px;" type="submit"
         id="env">Enviar</button>
       <button class="btn btn-danger btn-back btn-lg" style="border-radius: 20px" onclick="goBack()">Atrás</button>
-
+      <input type="hidden" style="border-radius:10px;" id="id_usuario" name="id_usuario" >
 
       <script src="middleware/middleware.js"></script>
 

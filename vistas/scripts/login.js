@@ -22,6 +22,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
       // Guardar el token en las cookies
       document.cookie = `token=${data.token};path=/;max-age=3600`
       document.cookie = `nombreUsuario=${encodeURIComponent(data.usuario.nombre)};path=/;max-age=3600`
+      document.cookie = `idUsuario=${encodeURIComponent(data.usuario.id)};path=/;max-age=3600`
       console.log('Login exitoso:', data)
       window.location.href = 'index.html'
     })

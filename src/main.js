@@ -34,12 +34,12 @@ const schema = buildSchema(`
 
   scalar DateTime
   type Reminder {
-    _id: ID!
-    title: String!
-    email: String!
-    message: String!
-    fecha: String!
-    usuario: Usuario!
+    id_recordatorio: ID!
+    titulo_nota: String!
+    email_nota: String!
+    mensaje_nota: String!
+    fecha_recordatorio: String!
+    id_usuario: Usuario!
   }
 
   type Usuario {
@@ -59,9 +59,9 @@ const schema = buildSchema(`
   }
 
   type Mutation {
-    createReminder(title: String!, email: String!, message: String!, fecha: String!, id_usuario: Int!): Reminder
+    createReminder(titulo_nota: String!, email_nota: String!, mensaje_nota: String!, fecha_recordatorio: DateTime!, id_usuario: Int!): Reminder
     createUser(nombre: String!, email: String!, hash_contrasena: String!, fecha_nacimiento: DateTime!): Usuario
-    updateReminder(_id: ID!, title: String!, email: String!, message: String!, fecha: String!): Reminder
+    updateReminder(_id: ID!, title: String!, email: String!, message: String!, fecha: DateTime!): Reminder
     deleteReminder(_id: ID!): Boolean
   }
 `);
@@ -69,13 +69,13 @@ const schema = buildSchema(`
 // Define your resolvers
 const root = {
   getReminder: async ({ _id }) => {
-    return await prisma.recordatorio.findUnique({
+    return await prisma.recordatorios.findUnique({
       where: { _id },
       include: { usuario: true },
     });
   },
   getAllReminders: async () => {
-    return await prisma.recordatorio.findMany({
+    return await prisma.recordatorios.findMany({
       include: { usuario: true },
     });
   },
@@ -118,20 +118,20 @@ const root = {
       where: { id_usuario },
     });
   },
-  createReminder: async ({ title, email, message, fecha, id_usuario }) => {
-    const reminder = await prisma.recordatorio.create({
+  createReminder: async ({ titulo_nota, email_nota, mensaje_nota, fecha_recordatorio, id_usuario }) => {
+    const reminder = await prisma.recordatorios.create({
       data: {
-        title,
-        email,
-        message,
-        fecha,
-        usuario: { connect: { id: id_usuario } },
+        titulo_nota,
+        email_nota,
+        mensaje_nota,
+        fecha_recordatorio,
+        id_usuario,
       },
     });
     return reminder;
   },
   updateReminder: async ({ _id, title, email, message, fecha }) => {
-    const reminder = await prisma.recordatorio.update({
+    const reminder = await prisma.recordatorios.update({
       where: { _id },
       data: {
         title,
@@ -217,17 +217,21 @@ async function sendEmail(asunto, mensaje, destinatario) {
 }
 // Crear o actualizar un recordatorio
 app.post('/posted-new-reminder', async (req, res, next) => {
-  const { titulo, email, descripcion, fecha, id } = req.body;
-  console.log(req.body);
+  const { titulo, email, descripcion, fecha, id, id_usuario } = req.body;
+
+  const idUsuario = parseInt(id_usuario, 10)
+  const fechaDate = new Date(fecha)
+  const fechaDateIso = fechaDate.toISOString()
+
   try {
-    if (id === undefined) {
+    if (!id) {
       // Crear nuevo recordatorio
-      const result = await graphql(schema, `mutation { createReminder(title: "${titulo}", email: "${email}", message: "${descripcion}", fecha: "${fecha}", id_usuario: ${id}) { _id } }`, root);
+      const result = await graphql(schema, `mutation { createReminder(titulo_nota: "${titulo}", email_nota: "${email}", mensaje_nota: "${descripcion}", fecha_recordatorio: "${fechaDateIso}", id_usuario: ${idUsuario}) { id_recordatorio } }`, root);
       console.log('Nuevo recordatorio creado:', result.data.createReminder);
       sendEmail(titulo, descripcion, email);
     } else {
       // Actualizar un recordatorio existente
-      const result = await graphql(schema, `mutation { updateReminder(_id: "${id}", title: "${titulo}", email: "${email}", message: "${descripcion}", fecha: "${fecha}" ) { _id } }`, root);
+      const result = await graphql(schema, `mutation { updateReminder(_id: "${id}", titulo_nota: "${titulo}", email_nota: "${email}", mensaje_nota: "${descripcion}", fecha_recordatorio: "${fechaDateIso}" ) { _id } }`, root);
       console.log('Recordatorio actualizado:', result.data.updateReminder._id);
     }
 
@@ -245,7 +249,7 @@ app.get('/', (req, res, next) => {
 // Obtener todos los recordatorios
 app.get('/historial-data', async (req, res, next) => {
   try {
-    const result = await graphql(schema, 'query { getAllReminders { _id, title, email, message, fecha } }', root);
+    const result = await graphql(schema, 'query { getAllReminders { id_recordatorio, titulo_nota, email_nota, mensaje_nota, fecha_recordatorio } }', root);
 
     res.json(result.data.getAllReminders);
   } catch (err) {
