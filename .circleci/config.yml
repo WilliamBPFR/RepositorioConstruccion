@@ -26,7 +26,7 @@
 #       - say-hello
 
 
-version: 2.1
+vversion: 2.1
 
 jobs:
   desarrollo:
@@ -37,22 +37,22 @@ jobs:
       GIT_TOKEN: $GIT_TOKEN
     steps:
       - checkout
-      - run:
-          name: Desarrollo Actions
-          command: |
-            git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
-            git checkout Desarrollo
-            git fetch origin master:master
-            git merge master
-            git push origin Desarrollo
-            git config --global --unset credential.helper
-      - run:
+      # - run:
+      #     name: Desarrollo Actions
+      #     command: |
+      #       git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
+      #       git checkout Desarrollo
+      #       git fetch origin master:master
+      #       git merge master
+      #       git push origin Desarrollo
+      #       git config --global --unset credential.helper
+      # - run:
           name: Development Tests
           command: |
             npm install
             npm run build
             # npm test
-            # INTREGACION CON SLACK PARA LAS CONFIRMACIONES
+            # Integracion con Slack para las confirmaciones
 
   qa:
     docker:
@@ -110,3 +110,27 @@ workflows:
       - produccion:
           requires:
             - qa
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - desarrollo:
+          filters:
+            branches:
+              only:
+                - desarrollo
+      - qa:
+          requires:
+            - desarrollo
+          filters:
+            branches:
+              only:
+                - qa
+      - produccion:
+          requires:
+            - qa
+          filters:
+            branches:
+              only:
+                - produccion
