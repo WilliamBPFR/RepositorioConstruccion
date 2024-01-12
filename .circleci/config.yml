@@ -26,7 +26,7 @@
 #       - say-hello
 
 
-vversion: 2.1
+version: 2.1
 
 jobs:
   desarrollo:
@@ -36,7 +36,7 @@ jobs:
       REPO_URL: "/"
       GIT_TOKEN: $GIT_TOKEN
     steps:
-      - checkout
+      # - checkout
       # - run:
       #     name: Desarrollo Actions
       #     command: |
@@ -46,7 +46,7 @@ jobs:
       #       git merge master
       #       git push origin Desarrollo
       #       git config --global --unset credential.helper
-      # - run:
+       - run:
           name: Development Tests
           command: |
             npm install
