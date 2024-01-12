@@ -52,6 +52,16 @@ jobs:
             # npm run build
             # npm test
             # INTREGACION CON SLACK PARA LAS CONFIRMACIONES
+      - run:
+          name: Create PR to QA
+          command: |
+            git config --global user.email "circleci@example.com"
+            git config --global user.name "CircleCI"
+            git checkout -b Desarrollo
+            git add .
+            git commit -m "Update from Desarrollo"
+            git push origin Desarrollo
+            gh pr create --base QA --head Desarrollo --title "Merge Desarrollo into QA" --body "Auto-generated PR from CircleCI"
 
   qa:
     docker:
@@ -106,18 +116,18 @@ workflows:
           filters:
             branches:
               only:
-                - desarrollo
+                - Desarrollo
       - qa:
           requires:
             - desarrollo
           filters:
             branches:
               only:
-                - qa
+                - QA
       - produccion:
           requires:
             - qa
           filters:
             branches:
               only:
-                - produccion
+                - Produccion
