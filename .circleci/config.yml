@@ -53,12 +53,15 @@ jobs:
             # npm test
             # INTREGACION CON SLACK PARA LAS CONFIRMACIONES
       - run:
-          name: Create PR to QA
+          name: Create and Push Branch
           command: |
+            eval $(ssh-agent -s)
+            ssh-add <(echo "$SSH_PRIVATE_KEY")
             git config --global user.email "circleci@example.com"
             git config --global user.name "CircleCI"
             git push origin Desarrollo:refs/heads/QA
             gh pr create --base QA --head Desarrollo --title "Merge Desarrollo into QA" --body "Auto-generated PR from CircleCI"
+
 
 
 
