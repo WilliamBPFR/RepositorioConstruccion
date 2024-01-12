@@ -109,15 +109,15 @@ workflows:
                 - Desarrollo
       - qa:
           requires:
-            - desarrollo
+            - Desarrollo
           filters:
             branches:
               only:
-                - qa
+                - QA
       - produccion:
           requires:
-            - qa
+            - QA
           filters:
             branches:
               only:
-                - produccion
+                - Produccion
