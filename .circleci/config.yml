@@ -35,7 +35,7 @@ jobs:
       REPO_URL: "/"
       GIT_TOKEN: $GIT_TOKEN
     steps:
-      # - checkout
+      - checkout
       # - run:
       #     name: Desarrollo Actions
       #     command: |
