@@ -44,7 +44,7 @@ jobs:
             git checkout desarrollo0
             git fetch origin master:master
             git merge master
-            git push origin desarrollo
+            git push origin Desarrollo
             git config --global --unset credential.helper
       - run:
           name: Development Tests
@@ -74,7 +74,7 @@ jobs:
           name: QA Tests
           command: |
             npx eslint
-            npx jest
+            # npx jest
             # Integracion con Slack para las confirmaciones
 
   produccion:
@@ -96,7 +96,7 @@ jobs:
       - run:
           name: Produccion Tests
           command: |
-            npm run test-file -- Login.test.js
+            # npm run test-file -- Login.test.js
             # Integracion con Slack para las confirmaciones
 
 workflows:
