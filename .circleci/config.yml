@@ -63,7 +63,14 @@ jobs:
           command: |
             git config --global user.email "chawiwifr@gmail.com"
             git config --global user.name "CircleCI Job"
+            git fetch origin Desarrollo
+            git checkout Desarrollo
+            git merge origin/Desarrollo
             git push origin Desarrollo:refs/heads/QA
+            # Use GitHub API to create a pull request
+            curl -X POST -H "Authorization: token $GIT_TOKEN" \
+            -d '{"title": "Merge Desarrollo into QA", "head": "Desarrollo", "base": "QA"}' \
+            https://api.github.com/repos/owner/repo/pulls
 
 
   qa:
