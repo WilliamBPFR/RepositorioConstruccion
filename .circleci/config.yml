@@ -24,6 +24,15 @@
 #   say-hello-workflow:
 #     jobs:
 #       - say-hello
+#- run:
+      #     name: Desarrollo Actions
+      #     command: |
+      #       git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
+      #       git checkout desarrollo0
+      #       git fetch origin master:master
+      #       git merge master
+      #       git push origin desarrollo
+      #       git config --global --unset credential.helper
 
 version: 2.1
 
@@ -36,15 +45,6 @@ jobs:
       GIT_TOKEN: $GIT_TOKEN
     steps:
       - checkout
-      - run:
-          name: Desarrollo Actions
-          command: |
-            git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
-            git checkout desarrollo0
-            git fetch origin master:master
-            git merge master
-            git push origin desarrollo
-            git config --global --unset credential.helper
       - run:
           name: Development Tests
           command: |
@@ -65,8 +65,8 @@ jobs:
           command: |
             git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
             git checkout qa
-            git fetch origin desarrollo:desarrollo
-            git merge desarrollo
+            git fetch origin Desarrollo:Desarrollo
+            git merge Desarrollo
             git push origin qa
             git config --global --unset credential.helper
       - run:
