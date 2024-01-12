@@ -2,7 +2,7 @@
 /* eslint-disable semi */
 /* eslint-disable camelcase */
 //NUEVALINEA #4
-// Espero que este cambio se ponga en QA
+// Espero que este cambio se ponga en QA #2
 const express = require('express')
 const nodemailer = require('nodemailer')
 const path = require('path')
