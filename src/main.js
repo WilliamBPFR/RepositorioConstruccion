@@ -274,7 +274,7 @@ app.get('/cargar-recordatorio/:_id', async (req, res, next) => {
   }
 });
 
-// registro
+// registro del usuario
 app.post('/register', async (req, res) => {
   try {
     const { nombre, email, contrasena, fecha_nacimiento } = req.body;
