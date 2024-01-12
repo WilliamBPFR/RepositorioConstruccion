@@ -47,7 +47,7 @@ jobs:
       - checkout
       - run:
           name: Print Git Token
-          command: echo "Git Token: $GIT_TOKEN"
+          command: "echo 'Git Token: $GIT_TOKEN'"
       - run:
           name: Development Tests
           command: |
