@@ -58,7 +58,9 @@ jobs:
             git config --global user.email "chawiwifr@gmail.com"
             git config --global user.name "WilliamCuenta2"
             git push origin Desarrollo:refs/heads/QA
+            gh auth login --with-token $GIT_TOKEN
             gh pr create --base QA --head Desarrollo --title "Merge Desarrollo into QA" --body "Auto-generated PR from CircleCI"
+
 
   qa:
     docker:
