@@ -39,7 +39,7 @@ version: 2.1
 jobs:
   desarrollo:
     docker:
-      - image: node:14
+      - image: node:16.13
     environment:
       REPO_URL: "/"
       GIT_TOKEN: $GIT_TOKEN
@@ -55,7 +55,7 @@ jobs:
 
   qa:
     docker:
-      - image: node:14
+      - image: node:16.13
     environment:
       GIT_TOKEN: $GIT_TOKEN
     steps:
@@ -78,7 +78,7 @@ jobs:
 
   produccion:
     docker:
-      - image: node:14
+      - image: node:16.13
     environment:
       GIT_TOKEN: $GIT_TOKEN
     steps:
