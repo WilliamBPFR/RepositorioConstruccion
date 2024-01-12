@@ -55,8 +55,6 @@ jobs:
       - run:
           name: Create and Push Branch
           command: |
-            eval $(ssh-agent -s)
-            ssh-add <(echo "$SSH_PRIVATE_KEY")
             git config --global user.email "circleci@example.com"
             git config --global user.name "CircleCI"
             git push origin Desarrollo:refs/heads/QA
