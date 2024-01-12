@@ -90,6 +90,7 @@ jobs:
             # Integracion con Slack para las confirmaciones
 
 workflows:
+  version: 2
   build:
     jobs:
       - desarrollo:
