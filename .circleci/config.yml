@@ -57,11 +57,10 @@ jobs:
           command: |
             git config --global user.email "circleci@example.com"
             git config --global user.name "CircleCI"
-            git checkout -b Desarrollo
-            git add .
-            git commit -m "Update from Desarrollo"
-            git push origin Desarrollo
+            git push origin Desarrollo:refs/heads/QA
             gh pr create --base QA --head Desarrollo --title "Merge Desarrollo into QA" --body "Auto-generated PR from CircleCI"
+
+
 
   qa:
     docker:
