@@ -41,7 +41,7 @@ jobs:
           name: Desarrollo Actions
           command: |
             git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
-            git checkout desarrollo0
+            git checkout Desarrollo
             git fetch origin master:master
             git merge master
             git push origin Desarrollo
