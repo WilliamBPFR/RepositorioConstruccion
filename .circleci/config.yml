@@ -43,6 +43,9 @@ jobs:
     environment:
       REPO_URL: "/"
     steps:
+      - add_ssh_keys:
+            fingerprints:
+              - $SSH_PRIVATE_KEY
       - checkout
       - run:
           name: Print Git Token
@@ -61,7 +64,6 @@ jobs:
             git config --global user.email "1104228@est.intec.edu.do"
             git config --global user.name "WilliamBPFR"
             git push origin Desarrollo:refs/heads/QA
-            gh auth login --with-token $GIT_TOKEN
             gh pr create --base QA --head Desarrollo --title "Merge Desarrollo into QA" --body "Auto-generated PR from CircleCI"
 
 
