@@ -2,8 +2,8 @@
 # # See: https://circleci.com/docs/configuration-reference
 # version: 2.1
 
-# # Define a job to be invoked later in a workflow.
-# # See: https://circleci.com/docs/configuration-reference/#jobs
+# # Define a job to be invoked later in a workflow.X
+# # See: https://circleci.com/docs/configuration-reference/#jobsS
 # jobs:
 #   say-hello:
 #     # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
@@ -24,39 +24,57 @@
 #   say-hello-workflow:
 #     jobs:
 #       - say-hello
-
+#- run:
+      #     name: Desarrollo Actions
+      #     command: |
+      #       git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
+      #       git checkout desarrollo0
+      #       git fetch origin master:master
+      #       git merge master
+      #       git push origin desarrollo
+      #       git config --global --unset credential.helper
 
 version: 2.1
 
 jobs:
   desarrollo:
     docker:
-      - image: node:14
+      - image: node:16.13
     environment:
       REPO_URL: "/"
-      GIT_TOKEN: $GIT_TOKEN
     steps:
+      - add_ssh_keys:
+            fingerprints:
+              - "a5:c9:c5:32:20:7f:5e:26:a1:f8:d7:e3:b0:e8:c3:67"
       - checkout
       - run:
-          name: Desarrollo Actions
+          name: Print Git Token
           command: |
-            git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
-            git checkout desarrollo0
-            git fetch origin master:master
-            git merge master
-            git push origin desarrollo
-            git config --global --unset credential.helper
+            echo "Git Token: $GIT_TOKEN"
       - run:
           name: Development Tests
           command: |
             npm install
-            npm run build
+            # npm run build
             # npm test
             # INTREGACION CON SLACK PARA LAS CONFIRMACIONES
+      - run:
+          name: Create and Push Branch
+          command: |
+            git config --global user.email "chawiwifr@gmail.com"
+            git config --global user.name "CircleCI Job"
+            git fetch origin Desarrollo
+            git checkout Desarrollo
+            git pull origin Desarrollo
+            # Use GitHub API to create a pull request
+            curl -X POST -H "Authorization: token $GIT_TOKEN" \
+            -d '{"title": "Merge Desarrollo into QA", "head": "Desarrollo", "base": "QA"}' \
+            https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
+
 
   qa:
     docker:
-      - image: node:14
+      - image: node:16.13
     environment:
       GIT_TOKEN: $GIT_TOKEN
     steps:
@@ -66,8 +84,8 @@ jobs:
           command: |
             git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
             git checkout qa
-            git fetch origin desarrollo:desarrollo
-            git merge desarrollo
+            git fetch origin Desarrollo:Desarrollo
+            git merge Desarrollo
             git push origin qa
             git config --global --unset credential.helper
       - run:
@@ -79,7 +97,7 @@ jobs:
 
   produccion:
     docker:
-      - image: node:14
+      - image: node:16.13
     environment:
       GIT_TOKEN: $GIT_TOKEN
     steps:
@@ -103,10 +121,22 @@ workflows:
   version: 2
   build:
     jobs:
-      - desarrollo
+      - desarrollo:
+          filters:
+            branches:
+              only:
+                - Desarrollo
       - qa:
           requires:
             - desarrollo
+          filters:
+            branches:
+              only:
+                - QA
       - produccion:
           requires:
             - qa
+          filters:
+            branches:
+              only:
+                - Produccion

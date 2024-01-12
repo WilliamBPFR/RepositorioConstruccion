@@ -1,6 +1,8 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable semi */
 /* eslint-disable camelcase */
+//NUEVALINEA #4
+// Espero que este cambio se ponga en QA #2
 const express = require('express')
 const nodemailer = require('nodemailer')
 const path = require('path')
@@ -274,7 +276,7 @@ app.get('/cargar-recordatorio/:_id', async (req, res, next) => {
   }
 });
 
-// registro
+// registro del usuario
 app.post('/register', async (req, res) => {
   try {
     const { nombre, email, contrasena, fecha_nacimiento } = req.body;
