@@ -42,7 +42,6 @@ jobs:
       - image: node:16.13
     environment:
       REPO_URL: "/"
-      GIT_TOKEN: dkdkdk
     steps:
       - checkout
       - run:
