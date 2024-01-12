@@ -45,7 +45,7 @@ jobs:
     steps:
       - add_ssh_keys:
             fingerprints:
-              - $SSH_PRIVATE_KEY
+              - "$SSH_PRIVATE_KEY"
       - checkout
       - run:
           name: Print Git Token
