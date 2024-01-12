@@ -45,7 +45,7 @@ jobs:
     steps:
       - add_ssh_keys:
             fingerprints:
-              - "$SSH_PRIVATE_KEY"
+              - "a5:c9:c5:32:20:7f:5e:26:a1:f8:d7:e3:b0:e8:c3:67"
       - checkout
       - run:
           name: Print Git Token
@@ -61,8 +61,8 @@ jobs:
       - run:
           name: Create and Push Branch
           command: |
-            git config --global user.email "1104228@est.intec.edu.do"
-            git config --global user.name "WilliamBPFR"
+            git config --global user.email "chawiwifr@gmail.com"
+            git config --global user.name "CircleCI Job"
             git push origin Desarrollo:refs/heads/QA
             gh pr create --base QA --head Desarrollo --title "Merge Desarrollo into QA" --body "Auto-generated PR from CircleCI"
 
