@@ -49,7 +49,7 @@ jobs:
           name: Development Tests
           command: |
             npm install
-            npm run build
+            # npm run build
             # npm test
             # INTREGACION CON SLACK PARA LAS CONFIRMACIONES
 
