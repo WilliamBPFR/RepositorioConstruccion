@@ -36,16 +36,7 @@ jobs:
       GIT_TOKEN: $GIT_TOKEN
     steps:
       - checkout
-      # - run:
-      #     name: Desarrollo Actions
-      #     command: |
-      #       git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
-      #       git checkout Desarrollo
-      #       git fetch origin master:master
-      #       git merge master
-      #       git push origin Desarrollo
-      #       git config --global --unset credential.helper
-       - run:
+      - run:
           name: Development Tests
           command: |
             npm install
