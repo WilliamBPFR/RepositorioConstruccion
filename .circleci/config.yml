@@ -72,6 +72,7 @@ jobs:
             https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
 
 
+
   qa:
     docker:
       - image: node:16.13
@@ -127,8 +128,6 @@ workflows:
               only:
                 - Desarrollo
       - qa:
-          requires:
-            - desarrollo
           filters:
             branches:
               only:
