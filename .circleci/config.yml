@@ -127,8 +127,6 @@ workflows:
               only:
                 - Desarrollo
       - qa:
-          requires:
-            - desarrollo
           filters:
             branches:
               only:
