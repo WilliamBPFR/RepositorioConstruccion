@@ -91,16 +91,16 @@ jobs:
 
 workflows:
   version: 2
-  say-hello-workflow:
+  build:
     jobs:
       - desarrollo:
           filters:
             branches:
               only:
-                - desarrollo
+                - Desarrollo
       - qa:
           requires:
-            - desarrollo
+            - Desarrollo
           filters:
             branches:
               only:
