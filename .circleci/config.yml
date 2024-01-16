@@ -6,10 +6,12 @@ jobs:
       - image: node:16.13
     environment:
       REPO_URL: "/"
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
       - add_ssh_keys:
-            fingerprints:
-              - "a5:c9:c5:32:20:7f:5e:26:a1:f8:d7:e3:b0:e8:c3:67"
+          fingerprints:
+            - "a5:c9:c5:32:20:7f:5e:26:a1:f8:d7:e3:b0:e8:c3:67"
       - checkout
       - run:
           name: Development Tests
@@ -29,12 +31,26 @@ jobs:
             curl -X POST -H "Authorization: token $GIT_TOKEN" \
             -d '{"title": "Merge Desarrollo into QA", "head": "Desarrollo", "base": "QA"}' \
             https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
+      - run:
+          name: Install Vercel CLI
+          command: npm install --global vercel@latest
+      - run:
+          name: Pull Vercel Environment Information
+          command: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+      - run:
+          name: Build Project Artifacts
+          command: vercel build --token=$VERCEL_TOKEN
+      - run:
+          name: Deploy Project Artifacts to Vercel
+          command: vercel deploy --prebuilt --token=$VERCEL_TOKEN
 
   qa:
     docker:
       - image: node:16.13
     environment:
       GIT_TOKEN: $GIT_TOKEN
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
       - checkout
       - run:
@@ -54,18 +70,44 @@ jobs:
             curl -X POST -H "Authorization: token $GIT_TOKEN" \
             -d '{"title": "Merge QA into Produccion", "head": "QA", "base": "Produccion"}' \
             https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
+      - run:
+          name: Install Vercel CLI
+          command: npm install --global vercel@latest
+      - run:
+          name: Pull Vercel Environment Information
+          command: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+      - run:
+          name: Build Project Artifacts
+          command: vercel build --token=$VERCEL_TOKEN
+      - run:
+          name: Deploy Project Artifacts to Vercel
+          command: vercel deploy --prebuilt --token=$VERCEL_TOKEN
 
   produccion:
     docker:
       - image: node:16.13
     environment:
       GIT_TOKEN: $GIT_TOKEN
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
       - checkout
       - run:
           name: Produccion Tests
           command: |
             #npm run test-file -- Login.test.js
+       - run:
+          name: Install Vercel CLI
+          command: npm install --global vercel@latest
+      - run:
+          name: Pull Vercel Environment Information
+          command: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+      - run:
+          name: Build Project Artifacts
+          command: vercel build --prod --token=$VERCEL_TOKEN
+      - run:
+          name: Deploy Project Artifacts to Vercel
+          command: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
 
 workflows:
   version: 2
