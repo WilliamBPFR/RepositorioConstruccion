@@ -96,7 +96,7 @@ jobs:
           name: Produccion Tests
           command: |
             #npm run test-file -- Login.test.js
-       - run:
+      - run:
           name: Install Vercel CLI
           command: npm install --global vercel@latest
       - run:
