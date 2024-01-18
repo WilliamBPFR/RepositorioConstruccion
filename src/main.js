@@ -18,6 +18,7 @@ const { graphqlHTTP } = require('express-graphql');
 const app = express()
 app.set('view engine', 'html')
 const { PrismaClient } = require('@prisma/client')
+const { Server } = require('http')
 
 const prisma = new PrismaClient()
 // app.set('view engine', 'ejs');
@@ -174,14 +175,14 @@ app.listen(port, () => {
 })
 // Lógica para cerrar el servidor
 // eslint-disable-next-line space-before-function-paren
-// function shutdown() {
-//   console.log('Cerrando el servidor HTTP...');
-//   app.close(() => {
-//     console.log('El servidor HTTP se ha cerrado correctamente.');
-//     process.exit(0); // Finalizar la ejecución del proceso
-//   });
-// }
-// process.on('SIGINT', shutdown);
+function shutdown() {
+  console.log('Cerrando el servidor HTTP...');
+  Server.close(() => {
+    console.log('El servidor HTTP se ha cerrado correctamente.');
+    process.exit(0); // Finalizar la ejecución del proceso
+  });
+}
+process.on('SIGINT', shutdown);
 
 // Resto del código de la aplicación...
 
