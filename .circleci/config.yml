@@ -18,7 +18,7 @@ jobs:
           command: |
             npm install
             # npm run build
-            # npm test
+            npx jest || exit 1
       - run:
           name: Create and Push Branch
           command: |
@@ -57,7 +57,7 @@ jobs:
           name: QA Tests
           command: |
             npx eslint
-            npx jest
+            npx jest || exit 1
       - run:
           name: Create and Push Branch
           command: |
