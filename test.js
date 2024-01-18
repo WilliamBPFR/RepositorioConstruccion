@@ -1,7 +1,7 @@
 const request = require('supertest');
 require('dotenv').config(); // Cargar variables de entorno de .env
 const { PrismaClient } = require('@prisma/client');
-const app = require('./src/main');
+const { app, cerrarServidor } = require('./src/main');
 const config = require('./config.json');
 
 let server;
@@ -19,18 +19,18 @@ jest.setTimeout(60000);
 
 beforeAll(async () => {
   prisma = new PrismaClient();
-
   await prisma.$connect();
   console.log('Conexión exitosa a la base de datos');
 
   // Iniciar el servidor antes de todas las pruebas
-  server = app.listen(config.port, () => {
-    console.log(`Server is running on port ${config.port}`);
+  server = app.listen(config.PORT+1, () => {
+    console.log(`Server is running on port ${config.PORT+1}`);
   });
 });
 
 afterAll(async () => {
   await prisma.$disconnect();
+  await cerrarServidor();
 
   // Cerrar el servidor y manejar errores
   await new Promise((resolve) => {
@@ -42,7 +42,9 @@ afterAll(async () => {
       }
       resolve();
     });
+    
   });
+
 });
 
 describe('Pruebas de apertura de historial', () => {

@@ -12,6 +12,7 @@ const dotenv = require('dotenv')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 dotenv.config();
+let server;
 const { graphql, buildSchema } = require('graphql');
 const { graphqlHTTP } = require('express-graphql');
 // const Reminder = require('./../db/database')
@@ -170,19 +171,25 @@ app.use('/graphql', graphqlHTTP({
 // Other app configurations...
 
 const port = config.PORT
-app.listen(port, () => {
+server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
+
+async function cerrarServidor() {
+  await new Promise((resolve) => {
+    server.close((err) => {
+      if (err) {
+        console.error('Error:', err);
+      } else {
+        console.log('Servidor Cerrado');
+      }
+      resolve();
+    });
+    
+})
+}
 // Lógica para cerrar el servidor
 // eslint-disable-next-line space-before-function-paren
-function shutdown() {
-  console.log('Cerrando el servidor HTTP...');
-  Server.close(() => {
-    console.log('El servidor HTTP se ha cerrado correctamente.');
-    process.exit(0); // Finalizar la ejecución del proceso
-  });
-}
-process.on('SIGINT', shutdown);
 
 // Resto del código de la aplicación...
 
@@ -224,7 +231,7 @@ async function sendEmail(asunto, mensaje, destinatario) {
     text: mensaje
   }
 
-  transporter.sendMail(mailOptions, (error, info) => {
+  await transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log('Error al enviar el correo electrónico:', error)
     } else {
@@ -449,4 +456,4 @@ app.post('/login', async (req, res) => {
     fecha: Date,
   }); */
 
-module.exports = app;
+  module.exports = { app, cerrarServidor };
