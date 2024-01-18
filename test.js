@@ -1,4 +1,5 @@
 const request = require('supertest');
+require('dotenv').config(); // Cargar variables de entorno de .env
 const { PrismaClient } = require('@prisma/client');
 const app = require('./src/main');
 const config = require('./config.json');
