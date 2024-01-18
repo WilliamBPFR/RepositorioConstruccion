@@ -1,7 +1,7 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable semi */
 /* eslint-disable camelcase */
-//NUEVALINEA #7
+// NUEVALINEA #7
 // Espero que este cambio se ponga en QA #2
 const express = require('express')
 const nodemailer = require('nodemailer')
@@ -18,7 +18,7 @@ const { graphqlHTTP } = require('express-graphql');
 const app = express()
 app.set('view engine', 'html')
 const { PrismaClient } = require('@prisma/client')
-const { Console } = require('console')
+const { Server } = require('http')
 
 const prisma = new PrismaClient()
 // app.set('view engine', 'ejs');
@@ -74,10 +74,10 @@ const root = {
   getReminder: async ({ _id }) => {
     return await prisma.recordatorios.findUnique({
       where: { id_recordatorio: _id },
-      include: { Usuario: true},
+      include: { Usuario: true },
     });
   },
-  getAllReminders: async ({_id_usuario}) => {
+  getAllReminders: async ({ _id_usuario }) => {
     return await prisma.recordatorios.findMany({
       where: { id_usuario: _id_usuario },
       include: { Usuario: true },
@@ -138,9 +138,9 @@ const root = {
     const reminder = await prisma.recordatorios.update({
       where: { id_recordatorio: _id },
       data: {
-        titulo_nota: titulo_nota,
-        email_nota: email_nota,
-        mensaje_nota: mensaje_nota,
+        titulo_nota,
+        email_nota,
+        mensaje_nota,
         fecha_creacion: fecha_recordatorio,
       },
     });
@@ -157,7 +157,7 @@ const root = {
       return false; // Deletion failed
     }
   },
-  
+
 };
 
 // GraphQL endpoint
@@ -173,11 +173,11 @@ const port = config.PORT
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
-
 // Lógica para cerrar el servidor
+// eslint-disable-next-line space-before-function-paren
 function shutdown() {
   console.log('Cerrando el servidor HTTP...');
-  server.close(() => {
+  Server.close(() => {
     console.log('El servidor HTTP se ha cerrado correctamente.');
     process.exit(0); // Finalizar la ejecución del proceso
   });
@@ -191,10 +191,10 @@ app.get('/eliminar-recordatorio/:_id', async (req, res, next) => {
   try {
     const { _id } = req.params;
     const response = await graphql(schema, `mutation { deleteReminder(_id: ${_id}) }`, root);
-    if(response.data.deleteReminder === false) {
-      alert("No se pudo eliminar el recordatorio")
-    }else{
-      alert("Recordatorio eliminado")
+    if (response.data.deleteReminder === false) {
+      alert('No se pudo eliminar el recordatorio')
+    } else {
+      alert('Recordatorio eliminado')
     }
     console.log('Recordatorio eliminado:', _id);
     res.redirect('/historial.html');
@@ -215,6 +215,7 @@ const transporter = nodemailer.createTransport({
 })
 
 // Función para enviar el correo electrónico
+// eslint-disable-next-line space-before-function-paren
 async function sendEmail(asunto, mensaje, destinatario) {
   const mailOptions = {
     from: process.env.USER,
@@ -371,25 +372,25 @@ app.post('/login', async (req, res) => {
 });
 
 // Middleware para token y ruta
-const verificarToken = (req, res, next) => {
-  const bearerHeader = req.headers.authorization;
+// const verificarToken = (req, res, next) => {
+//   const bearerHeader = req.headers.authorization;
 
-  if (typeof bearerHeader !== 'undefined') {
-    const bearer = bearerHeader.split(' ');
-    const bearerToken = bearer[1];
+//   if (typeof bearerHeader !== 'undefined') {
+//     const bearer = bearerHeader.split(' ');
+//     const bearerToken = bearer[1];
 
-    try {
-      // Verificar el token
-      const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET);
-      req.usuario = decoded;
-      next()
-    } catch (error) {
-      res.status(403).json({ message: 'Token inválido o expirado' });
-    }
-  } else {
-    res.status(401).json({ message: 'Acceso no autorizado' });
-  }
-};
+//     try {
+//       // Verificar el token
+//       const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET);
+//       req.usuario = decoded;
+//       next()
+//     } catch (error) {
+//       res.status(403).json({ message: 'Token inválido o expirado' });
+//     }
+//   } else {
+//     res.status(401).json({ message: 'Acceso no autorizado' });
+//   }
+// };
 
 // ejemplo de ruta privada
 
