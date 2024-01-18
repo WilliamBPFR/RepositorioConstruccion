@@ -20,14 +20,15 @@ if (encodedData) {
   console.log("decodedData",decodedData)
   const titulo = document.getElementById('titulo')
   const descripcion = document.getElementById('descripcion')
-  const id = document.getElementById('iddatos')
+  const id = document.getElementById('id')
   const fecha = document.getElementById('fecha')
   const email = document.getElementById('email')
-  id.value = decodedData._id
-  titulo.value = decodedData.title
-  descripcion.value = decodedData.message
-  fecha.value = decodedData.fecha.split('T')[0]
-  email.value = decodedData.email
+  console.log("decodedData",decodedData)
+  id.value = decodedData.id_recordatorio
+  titulo.value = decodedData.titulo_nota
+  descripcion.value = decodedData.mensaje_nota
+  fecha.value = decodedData.fecha_recordatorio.split('T')[0]
+  email.value = decodedData.email_nota
 } else {
   console.log('No data found')
   console.log("encodedData",encodedData)

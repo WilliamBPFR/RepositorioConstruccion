@@ -18,6 +18,7 @@ const { graphqlHTTP } = require('express-graphql');
 const app = express()
 app.set('view engine', 'html')
 const { PrismaClient } = require('@prisma/client')
+const { Console } = require('console')
 
 const prisma = new PrismaClient()
 // app.set('view engine', 'ejs');
@@ -36,12 +37,12 @@ const schema = buildSchema(`
 
   scalar DateTime
   type Reminder {
-    id_recordatorio: ID!
+    id_recordatorio: Int!
     titulo_nota: String!
     email_nota: String!
     mensaje_nota: String!
-    fecha_recordatorio: String!
-    id_usuario: Usuario!
+    fecha_recordatorio: DateTime!
+    id_usuario: Int!
   }
 
   type Usuario {
@@ -55,16 +56,16 @@ const schema = buildSchema(`
   }
 
   type Query {
-    getReminder(_id: ID!): Reminder
-    getAllReminders: [Reminder]
+    getReminder(_id: Int!): Reminder
+    getAllReminders(_id_usuario: Int!): [Reminder]
     getUser(id_usuario: Int!): Usuario
   }
 
   type Mutation {
     createReminder(titulo_nota: String!, email_nota: String!, mensaje_nota: String!, fecha_recordatorio: DateTime!, id_usuario: Int!): Reminder
     createUser(nombre: String!, email: String!, hash_contrasena: String!, fecha_nacimiento: DateTime!): Usuario
-    updateReminder(_id: ID!, title: String!, email: String!, message: String!, fecha: DateTime!): Reminder
-    deleteReminder(_id: ID!): Boolean
+    updateReminder(_id: Int!, titulo_nota: String!, email_nota: String!, mensaje_nota: String!, fecha_recordatorio: DateTime!): Reminder
+    deleteReminder(_id: Int!): Boolean
   }
 `);
 
@@ -72,13 +73,14 @@ const schema = buildSchema(`
 const root = {
   getReminder: async ({ _id }) => {
     return await prisma.recordatorios.findUnique({
-      where: { _id },
-      include: { usuario: true },
+      where: { id_recordatorio: _id },
+      include: { Usuario: true},
     });
   },
-  getAllReminders: async () => {
+  getAllReminders: async ({_id_usuario}) => {
     return await prisma.recordatorios.findMany({
-      include: { usuario: true },
+      where: { id_usuario: _id_usuario },
+      include: { Usuario: true },
     });
   },
   getUser: async ({ id_usuario }) => {
@@ -132,23 +134,30 @@ const root = {
     });
     return reminder;
   },
-  updateReminder: async ({ _id, title, email, message, fecha }) => {
+  updateReminder: async ({ _id, titulo_nota, email_nota, mensaje_nota, fecha_recordatorio }) => {
     const reminder = await prisma.recordatorios.update({
-      where: { _id },
+      where: { id_recordatorio: _id },
       data: {
-        title,
-        email,
-        message,
-        fecha,
+        titulo_nota: titulo_nota,
+        email_nota: email_nota,
+        mensaje_nota: mensaje_nota,
+        fecha_creacion: fecha_recordatorio,
       },
     });
     return reminder;
   },
   deleteReminder: async ({ _id }) => {
-    return await prisma.recordatorio.delete({
-      where: { _id },
-    });
+    try {
+      await prisma.recordatorios.delete({
+        where: { id_recordatorio: _id },
+      });
+      return true; // Deletion successful
+    } catch (error) {
+      console.error(`Error deleting reminder with ID ${_id}:`, error);
+      return false; // Deletion failed
+    }
   },
+  
 };
 
 // GraphQL endpoint
@@ -181,9 +190,14 @@ process.on('SIGINT', shutdown);
 app.get('/eliminar-recordatorio/:_id', async (req, res, next) => {
   try {
     const { _id } = req.params;
-    await graphql(schema, `mutation { deleteReminder(_id: "${_id}") }`, root);
+    const response = await graphql(schema, `mutation { deleteReminder(_id: ${_id}) }`, root);
+    if(response.data.deleteReminder === false) {
+      alert("No se pudo eliminar el recordatorio")
+    }else{
+      alert("Recordatorio eliminado")
+    }
     console.log('Recordatorio eliminado:', _id);
-    res.redirect('historial.html');
+    res.redirect('/historial.html');
   } catch (err) {
     console.log(err);
     next(err);
@@ -220,6 +234,7 @@ async function sendEmail(asunto, mensaje, destinatario) {
 // Crear o actualizar un recordatorio
 app.post('/posted-new-reminder', async (req, res, next) => {
   const { titulo, email, descripcion, fecha, id, id_usuario } = req.body;
+  console.log(req.body)
 
   const idUsuario = parseInt(id_usuario, 10)
   const fechaDate = new Date(fecha)
@@ -233,7 +248,8 @@ app.post('/posted-new-reminder', async (req, res, next) => {
       sendEmail(titulo, descripcion, email);
     } else {
       // Actualizar un recordatorio existente
-      const result = await graphql(schema, `mutation { updateReminder(_id: "${id}", titulo_nota: "${titulo}", email_nota: "${email}", mensaje_nota: "${descripcion}", fecha_recordatorio: "${fechaDateIso}" ) { _id } }`, root);
+      const result = await graphql(schema, `mutation { updateReminder(_id: ${id}, titulo_nota: "${titulo}", email_nota: "${email}", mensaje_nota: "${descripcion}", fecha_recordatorio: "${fechaDateIso}" ) { id_recordatorio, titulo_nota, email_nota, mensaje_nota, fecha_recordatorio } }`, root);
+      console.log(result)
       console.log('Recordatorio actualizado:', result.data.updateReminder._id);
     }
 
@@ -249,10 +265,11 @@ app.get('/', (req, res, next) => {
 })
 
 // Obtener todos los recordatorios
-app.get('/historial-data', async (req, res, next) => {
+app.get('/historial-data/:_id_usuario', async (req, res, next) => {
   try {
-    const result = await graphql(schema, 'query { getAllReminders { id_recordatorio, titulo_nota, email_nota, mensaje_nota, fecha_recordatorio } }', root);
-
+    const { _id_usuario } = req.params;
+    const result = await graphql(schema, `query { getAllReminders (_id_usuario:${_id_usuario}) { id_recordatorio, titulo_nota, email_nota, mensaje_nota, fecha_recordatorio } }`, root);
+    console.log(result)
     res.json(result.data.getAllReminders);
   } catch (err) {
     console.log(err);
@@ -264,8 +281,10 @@ app.get('/historial-data', async (req, res, next) => {
 app.get('/cargar-recordatorio/:_id', async (req, res, next) => {
   try {
     const { _id } = req.params;
-    const result = await graphql(schema, `query { getReminder(_id: "${_id}") { _id } }`, root);
+    // const result = await graphql(schema, `query { getReminder(_id: "${_id}") { _id } }`, root);
+    const result = await graphql(schema, `query { getReminder(_id: ${parseInt(_id)}) { id_recordatorio, titulo_nota, email_nota, mensaje_nota, fecha_recordatorio } }`, root);
     console.log('llegue');
+    console.log(result);
     const encodedData = encodeURIComponent(JSON.stringify(result.data.getReminder));
     const url = '/cargar-recordatorio/' + _id;
     const redirectUrl = req.originalUrl.replace(url, '');
