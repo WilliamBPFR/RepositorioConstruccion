@@ -1,7 +1,7 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable semi */
 /* eslint-disable camelcase */
-// NUEVALINEA #7
+// NUEVALINEA #8
 // Espero que este cambio se ponga en QA #2
 const express = require('express')
 const nodemailer = require('nodemailer')
@@ -185,8 +185,7 @@ async function cerrarServidor() {
       }
       resolve();
     });
-    
-})
+  })
 }
 // Lógica para cerrar el servidor
 // eslint-disable-next-line space-before-function-paren
@@ -456,4 +455,4 @@ app.post('/login', async (req, res) => {
     fecha: Date,
   }); */
 
-  module.exports = { app, cerrarServidor };
+module.exports = { app, cerrarServidor };
