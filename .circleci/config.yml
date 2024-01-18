@@ -18,6 +18,7 @@ jobs:
           command: |
             npm install
             # npm run build
+            prisma generate
             npx jest || exit 1
       - run:
           name: Create and Push Branch
