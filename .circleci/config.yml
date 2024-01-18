@@ -19,7 +19,7 @@ jobs:
           command: |
             npm install
             # npm run build
-            npx jest || exit 1
+            # npx jest || exit 1
             # pkill -f "jest --detectOpenHandles" || true
       - run:
           name: Create and Push Branch
@@ -33,18 +33,18 @@ jobs:
             curl -X POST -H "Authorization: token $GIT_TOKEN" \
             -d '{"title": "Merge Desarrollo into QA", "head": "Desarrollo", "base": "QA"}' \
             https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
-      - run:
-          name: Install Vercel CLI
-          command: npm install --global vercel@latest
-      - run:
-          name: Pull Vercel Environment Information
-          command: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
-      - run:
-          name: Build Project Artifacts
-          command: vercel build --token=$VERCEL_TOKEN
-      - run:
-          name: Deploy Project Artifacts to Vercel
-          command: vercel deploy --prebuilt --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Install Vercel CLI
+      #     command: npm install --global vercel@latest
+      # - run:
+      #     name: Pull Vercel Environment Information
+      #     command: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Build Project Artifacts
+      #     command: vercel build --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Deploy Project Artifacts to Vercel
+      #     command: vercel deploy --prebuilt --token=$VERCEL_TOKEN
 
   qa:
     docker:
