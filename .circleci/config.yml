@@ -19,7 +19,7 @@ jobs:
           command: |
             npm install
             # npm run build
-            # npx jest || exit 1
+            npx jest || exit 1
             # pkill -f "jest --detectOpenHandles" || true
       - run:
           name: Create and Push Branch
