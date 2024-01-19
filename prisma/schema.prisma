@@ -3,6 +3,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider = "mysql"
+  url      = env("DATARL")
+}
+
 model Usuario {
     id_usuario       Int             @id @default(autoincrement())
     nombre           String
