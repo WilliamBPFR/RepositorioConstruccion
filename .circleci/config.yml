@@ -27,7 +27,7 @@ jobs:
           command: npm install
       - run:
           name: Generar schema.prisma
-          command: node generateSchema.js
+          command: node generatePrisma.js
       - run:
           name: Generar Prisma Client
           command: npx prisma generate
