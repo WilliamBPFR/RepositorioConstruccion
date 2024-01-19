@@ -26,7 +26,10 @@ jobs:
           name: Install Dependencies
           command: npm install
       - run:
-          name: Generate Prisma Client
+          name: Generar schema.prisma
+          command: node generateSchema.js
+      - run:
+          name: Generar Prisma Client
           command: npx prisma generate
       - run:
           name: Development Tests

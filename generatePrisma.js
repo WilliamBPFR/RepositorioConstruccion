@@ -2,8 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('./../config.json')
+const config = require('./config.json')
+const dotenv = require('dotenv');
 
+dotenv.config();
 
 // Lee la configuración desde config.json
 // const configFile = path.join(__dirname, 'config.json');
@@ -17,9 +19,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = "${config.DATABASE_URL || 'mada'}"
-}
+    provider = "mysql"
+    url      = "${process.env.DATABASE_URL}"
+  }
 
 model Usuario {
     id_usuario       Int             @id @default(autoincrement())
@@ -45,7 +47,7 @@ model Usuario {
 `;
 
 // Escribe el contenido en el archivo schema.prisma
-const schemaFile = path.join(__dirname, 'schema.prisma');
+const schemaFile = path.join(__dirname, 'prisma/schema.prisma');
 fs.writeFileSync(schemaFile, schemaContent);
 
 console.log('Generated schema.prisma with databaseUrl:', config.DATABASE_URL || 'fallback');
