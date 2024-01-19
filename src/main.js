@@ -21,7 +21,13 @@ app.set('view engine', 'html')
 const { PrismaClient } = require('@prisma/client')
 const { Server } = require('http')
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    }
+  }
+})
 // app.set('view engine', 'ejs');
 
 app.use(express.static(path.join(__dirname, './../vistas')))
