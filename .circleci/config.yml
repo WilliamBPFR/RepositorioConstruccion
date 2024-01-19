@@ -23,12 +23,14 @@ jobs:
       #     command: |
       #       env
       - run:
+          name: Install Dependencies
+          command: npm install
+      - run:
+          name: Generate Prisma Client
+          command: npx prisma generate
+      - run:
           name: Development Tests
-          command: |
-            npm install
-            # npm run build
-            npx jest || exit 1
-            # pkill -f "jest --detectOpenHandles" || true
+          command: npx jest || exit 1
       - run:
           name: Create and Push Branch
           command: |
