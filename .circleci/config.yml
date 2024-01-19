@@ -21,6 +21,8 @@ jobs:
             # npm run build
             npx jest || exit 1
             # pkill -f "jest --detectOpenHandles" || true
+          environment:
+            DATABASE_URL: $DATABASE_URL
       - run:
           name: Create and Push Branch
           command: |
