@@ -47,7 +47,7 @@ model Usuario {
 `;
 
 // Escribe el contenido en el archivo schema.prisma
-const schemaFile = path.join(__dirname, 'prisma/schema.prisma');
+const schemaFile = path.join(__dirname, 'prisma', 'schema.prisma');
 fs.writeFileSync(schemaFile, schemaContent);
 
 console.log('Generated schema.prisma with databaseUrl:', config.DATABASE_URL || 'fallback');
