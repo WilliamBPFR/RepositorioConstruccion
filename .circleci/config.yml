@@ -14,6 +14,15 @@ jobs:
             - "a5:c9:c5:32:20:7f:5e:26:a1:f8:d7:e3:b0:e8:c3:67"
       - checkout
       - run:
+        name: Set Environment Variables
+        command: |
+          export DATABASE_URL=$DATABASE_URL
+          echo "DATABASE_URL: $DATABASE_URL"
+      - run:
+        name: Print Environment Variables
+        command: |
+          env
+      - run:
           name: Development Tests
           command: |
             export DATABASE_URL=$DATABASE_URL
