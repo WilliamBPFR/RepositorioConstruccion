@@ -13,21 +13,6 @@ jobs:
           fingerprints:
             - "a5:c9:c5:32:20:7f:5e:26:a1:f8:d7:e3:b0:e8:c3:67"
       - checkout
-      # - run:
-      #     name: Set Environment Variables
-      #     command: |
-      #       export DATABASE_URL=$DATABASE_URL
-      #       echo "DATABASE_URL: $DATABASE_URL"
-      # - run:
-      #     name: Print Environment Variables
-      #     command: |
-      #       env
-      # - run:
-      #     name: Install Dependencies
-      #     command: npm install
-      # - run:
-      #     name: Generar Prisma Client
-      #     command: npx prisma generate
       - run:
           name: Development Tests
           command: |
@@ -71,7 +56,8 @@ jobs:
       - run:
           name: QA Tests
           command: |
-            npx eslint
+            npm install
+            npx prisma generate
             npx jest || exit 1
       - run:
           name: Create and Push Branch
@@ -110,7 +96,9 @@ jobs:
       - run:
           name: Produccion Tests
           command: |
-            #npm run test-file -- Login.test.js
+            npm install
+            npx prisma generate
+            npx jest || exit 1
       - run:
           name: Install Vercel CLI
           command: npm install --global vercel@latest
