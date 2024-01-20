@@ -31,18 +31,7 @@ jobs:
             curl -X POST -H "Authorization: token $GIT_TOKEN" \
             -d '{"title": "Merge Desarrollo into QA", "head": "Desarrollo", "base": "QA"}' \
             https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
-      # - run:
-      #     name: Install Vercel CLI
-      #     command: npm install --global vercel@latest
-      # - run:
-      #     name: Pull Vercel Environment Information
-      #     command: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
-      # - run:
-      #     name: Build Project Artifacts
-      #     command: vercel build --token=$VERCEL_TOKEN
-      # - run:
-      #     name: Deploy Project Artifacts to Vercel
-      #     command: vercel deploy --prebuilt --token=$VERCEL_TOKEN
+
 
   qa:
     docker:
@@ -70,18 +59,7 @@ jobs:
             curl -X POST -H "Authorization: token $GIT_TOKEN" \
             -d '{"title": "Merge QA into Produccion", "head": "QA", "base": "Produccion"}' \
             https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
-      # - run:
-      #     name: Install Vercel CLI
-      #     command: npm install --global vercel@latest
-      # - run:
-      #     name: Pull Vercel Environment Information
-      #     command: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
-      # - run:
-      #     name: Build Project Artifacts
-      #     command: vercel build --token=$VERCEL_TOKEN
-      # - run:
-      #     name: Deploy Project Artifacts to Vercel
-      #     command: vercel deploy --prebuilt --token=$VERCEL_TOKEN
+
 
   produccion:
     docker:
@@ -98,18 +76,6 @@ jobs:
             npm install
             npx prisma generate
             npx jest || exit 1
-      # - run:
-      #     name: Install Vercel CLI
-      #     command: npm install --global vercel@latest
-      # - run:
-      #     name: Pull Vercel Environment Information
-      #     command: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-      # - run:
-      #     name: Build Project Artifacts
-      #     command: vercel build --prod --token=$VERCEL_TOKEN
-      # - run:
-      #     name: Deploy Project Artifacts to Vercel
-      #     command: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
 
 workflows:
   version: 2
