@@ -1,5 +1,5 @@
 {
     "databaseURL": "mongodb://db:27017/mongo",
-    "PORT": 3009,
+    "PORT": 3000,
     "DATABASE_URL": "${DATABASE_URL}"
 }

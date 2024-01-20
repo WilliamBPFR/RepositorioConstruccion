@@ -20,7 +20,7 @@ const app = express()
 app.set('view engine', 'html')
 const { PrismaClient } = require('@prisma/client')
 const { Server } = require('http')
-const port = process.env.PORT || 4000;
+const port = config.PORT;
 
 const prisma = new PrismaClient({
   datasources: {
@@ -463,4 +463,4 @@ app.post('/login', async (req, res) => {
     fecha: Date,
   }); */
 
-module.exports = app;
+module.exports = {app, cerrarServidor};
