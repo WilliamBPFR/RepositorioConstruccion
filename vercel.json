@@ -8,9 +8,21 @@
     ],
     "routes": [
       {
+        "src": "/images/(.*)", 
+        "dest": "public/$1"
+      },
+      {
         "src": "/(.*)",
         "dest": "src/main.js"
       }
-    ]
+    ],
+    "env": {
+      "PORT": 3009
+    },
+    "public": {
+      "include": [
+        "images/**"
+      ]
+    }
   }
   

@@ -1,7 +1,7 @@
 const request = require('supertest');
 require('dotenv').config(); // Cargar variables de entorno de .env
 const { PrismaClient } = require('@prisma/client');
-const { app, cerrarServidor } = require('./src/main');
+const {app,cerrarServidor} = require('./src/main.js');
 const config = require('./config.json');
 
 let server;
@@ -25,7 +25,7 @@ beforeAll(async () => {
   console.log('Conexión exitosa a la base de datos');
 
   // Iniciar el servidor antes de todas las pruebas
-  server = app.listen(config.PORT+1, () => {
+  server = app.listen(config.PORT +1, () => {
     console.log(`Server is running on port ${config.PORT+1}`);
   });
 });

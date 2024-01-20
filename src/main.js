@@ -7,7 +7,7 @@ const express = require('express')
 const nodemailer = require('nodemailer')
 const path = require('path')
 const bodyParser = require('body-parser')
-const config = require('./../config')
+const config = require('./../config.json')
 const dotenv = require('dotenv')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -20,6 +20,7 @@ const app = express()
 app.set('view engine', 'html')
 const { PrismaClient } = require('@prisma/client')
 const { Server } = require('http')
+const port = config.PORT;
 
 const prisma = new PrismaClient({
   datasources: {
@@ -30,14 +31,14 @@ const prisma = new PrismaClient({
 })
 // app.set('view engine', 'ejs');
 
-app.use(express.static(path.join(__dirname, './../vistas')))
+app.use(express.static(path.join(__dirname, './../public')))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use((req, res, next) => {
   console.log(req.method + ' : ' + req.url)
   next()
 })
-app.set('views', path.join(__dirname, 'vistas'))
+app.set('views', path.join(__dirname, 'public'))
 
 // Define your GraphQL schema
 const schema = buildSchema(`
@@ -176,7 +177,6 @@ app.use('/graphql', graphqlHTTP({
 
 // Other app configurations...
 
-const port = config.PORT
 server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
@@ -311,6 +311,8 @@ app.get('/cargar-recordatorio/:_id', async (req, res, next) => {
 // registro del usuario
 app.post('/register', async (req, res) => {
   try {
+    console.log('llegue')
+    console.log(req.body)
     const { nombre, email, contrasena, fecha_nacimiento } = req.body;
 
     // Validar los datos de entrada
@@ -461,4 +463,4 @@ app.post('/login', async (req, res) => {
     fecha: Date,
   }); */
 
-module.exports = { app, cerrarServidor };
+module.exports = {app, cerrarServidor};
