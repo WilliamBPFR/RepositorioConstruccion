@@ -20,6 +20,7 @@ const app = express()
 app.set('view engine', 'html')
 const { PrismaClient } = require('@prisma/client')
 const { Server } = require('http')
+const port = process.env.PORT || 4000;
 
 const prisma = new PrismaClient({
   datasources: {
@@ -176,7 +177,6 @@ app.use('/graphql', graphqlHTTP({
 
 // Other app configurations...
 
-const port = config.PORT
 server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
@@ -311,6 +311,8 @@ app.get('/cargar-recordatorio/:_id', async (req, res, next) => {
 // registro del usuario
 app.post('/register', async (req, res) => {
   try {
+    console.log('llegue')
+    console.log(req.body)
     const { nombre, email, contrasena, fecha_nacimiento } = req.body;
 
     // Validar los datos de entrada
@@ -461,4 +463,4 @@ app.post('/login', async (req, res) => {
     fecha: Date,
   }); */
 
-module.exports = { app, cerrarServidor };
+module.exports = app;
