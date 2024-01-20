@@ -6,17 +6,34 @@ jobs:
       - image: node:16.13
     environment:
       REPO_URL: "/"
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
       - add_ssh_keys:
-            fingerprints:
-              - "a5:c9:c5:32:20:7f:5e:26:a1:f8:d7:e3:b0:e8:c3:67"
+          fingerprints:
+            - "a5:c9:c5:32:20:7f:5e:26:a1:f8:d7:e3:b0:e8:c3:67"
       - checkout
+      # - run:
+      #     name: Set Environment Variables
+      #     command: |
+      #       export DATABASE_URL=$DATABASE_URL
+      #       echo "DATABASE_URL: $DATABASE_URL"
+      # - run:
+      #     name: Print Environment Variables
+      #     command: |
+      #       env
+      # - run:
+      #     name: Install Dependencies
+      #     command: npm install
+      # - run:
+      #     name: Generar Prisma Client
+      #     command: npx prisma generate
       - run:
           name: Development Tests
           command: |
             npm install
-            # npm run build
-            # npm test
+            npx prisma generate
+            npx jest || exit 1
       - run:
           name: Create and Push Branch
           command: |
@@ -29,19 +46,33 @@ jobs:
             curl -X POST -H "Authorization: token $GIT_TOKEN" \
             -d '{"title": "Merge Desarrollo into QA", "head": "Desarrollo", "base": "QA"}' \
             https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
+      # - run:
+      #     name: Install Vercel CLI
+      #     command: npm install --global vercel@latest
+      # - run:
+      #     name: Pull Vercel Environment Information
+      #     command: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Build Project Artifacts
+      #     command: vercel build --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Deploy Project Artifacts to Vercel
+      #     command: vercel deploy --prebuilt --token=$VERCEL_TOKEN
 
   qa:
     docker:
       - image: node:16.13
     environment:
       GIT_TOKEN: $GIT_TOKEN
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
       - checkout
       - run:
           name: QA Tests
           command: |
             npx eslint
-            npx jest
+            npx jest || exit 1
       - run:
           name: Create and Push Branch
           command: |
@@ -54,18 +85,44 @@ jobs:
             curl -X POST -H "Authorization: token $GIT_TOKEN" \
             -d '{"title": "Merge QA into Produccion", "head": "QA", "base": "Produccion"}' \
             https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
+      - run:
+          name: Install Vercel CLI
+          command: npm install --global vercel@latest
+      - run:
+          name: Pull Vercel Environment Information
+          command: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+      - run:
+          name: Build Project Artifacts
+          command: vercel build --token=$VERCEL_TOKEN
+      - run:
+          name: Deploy Project Artifacts to Vercel
+          command: vercel deploy --prebuilt --token=$VERCEL_TOKEN
 
   produccion:
     docker:
       - image: node:16.13
     environment:
       GIT_TOKEN: $GIT_TOKEN
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
       - checkout
       - run:
           name: Produccion Tests
           command: |
             #npm run test-file -- Login.test.js
+      - run:
+          name: Install Vercel CLI
+          command: npm install --global vercel@latest
+      - run:
+          name: Pull Vercel Environment Information
+          command: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+      - run:
+          name: Build Project Artifacts
+          command: vercel build --prod --token=$VERCEL_TOKEN
+      - run:
+          name: Deploy Project Artifacts to Vercel
+          command: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
 
 workflows:
   version: 2

@@ -1,6 +1,16 @@
 // Realizar una petición AJAX para obtener los datos
+function obtenerValorCookie(nombre) {
+  const valor = `; ${document.cookie}`
+  const partes = valor.split(`; ${nombre}=`)
+  if (partes.length === 2) return partes.pop().split(';').shift()
+  return null
+}
+
 const xhr = new XMLHttpRequest()
-xhr.open('GET', '/historial-data', true)
+const idUsuario = obtenerValorCookie('idUsuario')
+const id_usuario = decodeURIComponent(idUsuario)
+console.log("id_usuario",id_usuario)
+xhr.open('GET', `/historial-data/${id_usuario}`, true)
 xhr.onreadystatechange = function () {
   if (xhr.readyState === 4 && xhr.status === 200) {
     const data = JSON.parse(xhr.responseText)
@@ -14,13 +24,15 @@ xhr.onreadystatechange = function () {
     }
     else{
       data.forEach(function (element) {
+        console.log("elemennntosss")
+        console.log(element)
         const titulo = document.createElement('li')
         const tituloSpan = document.createElement('span')
         const divButtons = document.createElement('div')
         const editarButton = document.createElement('button')
         const eliminarButton = document.createElement('button')
-        titulo.textContent = element.title
-        console.log(element.title)
+        titulo.textContent = element.titulo_nota
+        console.log(element.titulo_nota)
         titulo.className = 'list-group-item'
         divButtons.className = 'btn-group'
         divButtons.role = 'group'
@@ -35,14 +47,14 @@ xhr.onreadystatechange = function () {
         divButtons.appendChild(eliminarButton)
         editarButton.addEventListener('click', function () {
           event.stopPropagation() // Evita que el evento de clic se propague al elemento padre (el título)
-          window.location.href = 'cargar-recordatorio/' + element._id
+          window.location.href = 'cargar-recordatorio/' + element.id_recordatorio
         })
         eliminarButton.addEventListener('click', function () {
           event.stopPropagation()
-          window.location.href = 'eliminar-recordatorio/' + element._id
+          window.location.href = 'eliminar-recordatorio/' + element.id_recordatorio
         })
         titulo.addEventListener('click', function () {
-          window.location.href = 'cargar-recordatorio/' + element._id
+          window.location.href = 'cargar-recordatorio/' + element._id_recordatorio
         })
       })
 
