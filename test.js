@@ -101,7 +101,8 @@ describe('Pruebas de apertura de historial', () => {
 
   it('Debería hacer el registro de una persona', async () => {
 
-
+    console.log("registro de nueva persona")
+    console.log(nuevaPersona)
     const response = await request(server)
       .post('/register')
       .send(nuevaPersona);
@@ -119,6 +120,9 @@ describe('Pruebas de apertura de historial', () => {
       email: nuevaPersona.email,
       contrasena: nuevaPersona.contrasena,
     };
+
+    console.log("login de nueva persona")
+    console.log(nuevaPersona)
 
     const response = await request(server)
       .post('/login')
