@@ -18,5 +18,4 @@ function obtenerTokenDeCookies(nombre) {
   if (partes.length === 2) return partes.pop().split(';').shift()
   return null
 }
-
 document.addEventListener('DOMContentLoaded', verificarAutenticacion)

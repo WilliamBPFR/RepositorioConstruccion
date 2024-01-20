@@ -1,112 +1,132 @@
-# # Use the latest 2.1 version of CircleCI pipeline process engine.
-# # See: https://circleci.com/docs/configuration-reference
-# version: 2.1
-
-# # Define a job to be invoked later in a workflow.
-# # See: https://circleci.com/docs/configuration-reference/#jobs
-# jobs:
-#   say-hello:
-#     # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-#     # See: https://circleci.com/docs/configuration-reference/#executor-job
-#     docker:
-#       - image: cimg/base:stable
-#     # Add steps to the job
-#     # See: https://circleci.com/docs/configuration-reference/#steps
-#     steps:
-#       - checkout
-#       - run:
-#           name: "Say hello"
-#           command: "echo Hello, World!"
-
-# # Orchestrate jobs using workflows
-# # See: https://circleci.com/docs/configuration-reference/#workflows
-# workflows:
-#   say-hello-workflow:
-#     jobs:
-#       - say-hello
-
-
 version: 2.1
 
 jobs:
   desarrollo:
     docker:
-      - image: node:14
+      - image: node:16.13
     environment:
       REPO_URL: "/"
-      GIT_TOKEN: $GIT_TOKEN
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "a5:c9:c5:32:20:7f:5e:26:a1:f8:d7:e3:b0:e8:c3:67"
       - checkout
-      - run:
-          name: Desarrollo Actions
-          command: |
-            git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
-            git checkout desarrollo0
-            git fetch origin master:master
-            git merge master
-            git push origin desarrollo
-            git config --global --unset credential.helper
       - run:
           name: Development Tests
           command: |
             npm install
-            npm run build
-            # npm test
-            # INTREGACION CON SLACK PARA LAS CONFIRMACIONES
+            npx prisma generate
+            npx jest || exit 1
+      - run:
+          name: Create and Push Branch
+          command: |
+            git config --global user.email "chawiwifr@gmail.com"
+            git config --global user.name "CircleCI Job"
+            git fetch origin Desarrollo
+            git checkout Desarrollo
+            git pull origin Desarrollo
+            # Use GitHub API to create a pull request
+            curl -X POST -H "Authorization: token $GIT_TOKEN" \
+            -d '{"title": "Merge Desarrollo into QA", "head": "Desarrollo", "base": "QA"}' \
+            https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
+      # - run:
+      #     name: Install Vercel CLI
+      #     command: npm install --global vercel@latest
+      # - run:
+      #     name: Pull Vercel Environment Information
+      #     command: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Build Project Artifacts
+      #     command: vercel build --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Deploy Project Artifacts to Vercel
+      #     command: vercel deploy --prebuilt --token=$VERCEL_TOKEN
 
   qa:
     docker:
-      - image: node:14
+      - image: node:16.13
     environment:
-      GIT_TOKEN: $GIT_TOKEN
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
       - checkout
-      - run:
-          name: QA Actions
-          command: |
-            git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
-            git checkout qa
-            git fetch origin desarrollo:desarrollo
-            git merge desarrollo
-            git push origin qa
-            git config --global --unset credential.helper
       - run:
           name: QA Tests
           command: |
-            npx eslint
-            npx jest
-            # Integracion con Slack para las confirmaciones
+            npm install
+            npx prisma generate
+            npx jest || exit 1
+      - run:
+          name: Create and Push Branch
+          command: |
+            git config --global user.email "chawiwifr@gmail.com"
+            git config --global user.name "CircleCI Job"
+            git fetch origin QA
+            git checkout QA
+            git pull origin QA
+            # Use GitHub API to create a pull request
+            curl -X POST -H "Authorization: token $GIT_TOKEN" \
+            -d '{"title": "Merge QA into Produccion", "head": "QA", "base": "Produccion"}' \
+            https://api.github.com/repos/WilliamBPFR/RepositorioConstruccion/pulls
+      # - run:
+      #     name: Install Vercel CLI
+      #     command: npm install --global vercel@latest
+      # - run:
+      #     name: Pull Vercel Environment Information
+      #     command: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Build Project Artifacts
+      #     command: vercel build --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Deploy Project Artifacts to Vercel
+      #     command: vercel deploy --prebuilt --token=$VERCEL_TOKEN
 
   produccion:
     docker:
-      - image: node:14
+      - image: node:16.13
     environment:
       GIT_TOKEN: $GIT_TOKEN
+      VERCEL_ORG_ID: $VERCEL_ORG_ID
+      VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
       - checkout
       - run:
-          name: Produccion Actions
-          command: |
-            git config --global credential.helper "!f() { echo username=WilliamBPFR; echo password=$GIT_TOKEN; }; f"
-            git checkout produccion
-            git fetch origin qa:qa
-            git merge qa
-            git push origin produccion
-            git config --global --unset credential.helper
-      - run:
           name: Produccion Tests
           command: |
-            npm run test-file -- Login.test.js
-            # Integracion con Slack para las confirmaciones
+            npm install
+            npx prisma generate
+            npx jest || exit 1
+      # - run:
+      #     name: Install Vercel CLI
+      #     command: npm install --global vercel@latest
+      # - run:
+      #     name: Pull Vercel Environment Information
+      #     command: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Build Project Artifacts
+      #     command: vercel build --prod --token=$VERCEL_TOKEN
+      # - run:
+      #     name: Deploy Project Artifacts to Vercel
+      #     command: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
 
 workflows:
   version: 2
   build:
     jobs:
-      - desarrollo
+      - desarrollo:
+          filters:
+            branches:
+              only:
+                - Desarrollo
       - qa:
-          requires:
-            - desarrollo
+          filters:
+            branches:
+              only:
+                - QA
       - produccion:
-          requires:
-            - qa
+          filters:
+            branches:
+              only:
+                - Produccion

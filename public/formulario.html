@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="assets/styles.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <title>Formulario de Recordatorios</title>
   <style>
@@ -17,7 +17,7 @@
 <body>
   <div class="container-custom">
     <div class="d-flex align-items-center">
-      <img src="images/bell.png" alt="Imagen" class="mr-2" style="width: 70px; height: 70px;">
+      <img src="assets/images/bell.png" alt="Imagen" class="mr-2" style="width: 70px; height: 70px;">
       <h1>Crear recordatorio</h1>
     </div>
     <form id="myform" method="post" action="/posted-new-reminder">
@@ -42,6 +42,8 @@
         id="env">Enviar</button>
       <button class="btn btn-danger btn-back btn-lg" style="border-radius: 20px" onclick="goBack()">Atrás</button>
       <input type="hidden" style="border-radius:10px;" id="id_usuario" name="id_usuario" >
+      <input type="hidden" style="border-radius:10px;" id="id" name="id" >
+
 
       <script src="middleware/middleware.js"></script>
 
@@ -62,7 +64,7 @@
         });
       </script>
 
-      <script src="scripts/load-reminder-formulario.js"></script>
+      <script src="assets/scripts/load-reminder-formulario.js"></script>
 
     </form>
   </div>
