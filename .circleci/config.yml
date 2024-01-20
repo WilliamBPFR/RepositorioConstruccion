@@ -22,15 +22,18 @@ jobs:
       #     name: Print Environment Variables
       #     command: |
       #       env
-      - run:
-          name: Install Dependencies
-          command: npm install
-      - run:
-          name: Generar Prisma Client
-          command: npx prisma generate
+      # - run:
+      #     name: Install Dependencies
+      #     command: npm install
+      # - run:
+      #     name: Generar Prisma Client
+      #     command: npx prisma generate
       - run:
           name: Development Tests
-          command: npx jest || exit 1
+          command: |
+            npm install
+            npx prisma generate
+            npx jest || exit 1
       - run:
           name: Create and Push Branch
           command: |
