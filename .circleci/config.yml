@@ -127,8 +127,6 @@ workflows:
               only:
                 - QA
       - produccion:
-          requires:
-            - qa
           filters:
             branches:
               only:
