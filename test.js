@@ -19,7 +19,7 @@ jest.setTimeout(60000);
 
 beforeAll(async () => {
   console.log('Iniciando pruebas...');
-  console.log(process.env.DATABASE_URL);
+  console.log(process.env.DATABASE_URL.split('@')[1] + " " + process.env.DATABASE_URL.split('@')[0]);
   prisma = new PrismaClient();
   await prisma.$connect();
   console.log('Conexión exitosa a la base de datos');
