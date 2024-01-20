@@ -7,7 +7,7 @@ const express = require('express')
 const nodemailer = require('nodemailer')
 const path = require('path')
 const bodyParser = require('body-parser')
-const config = require('./../config')
+const config = require('./../config.json')
 const dotenv = require('dotenv')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -31,14 +31,14 @@ const prisma = new PrismaClient({
 })
 // app.set('view engine', 'ejs');
 
-app.use(express.static(path.join(__dirname, './../vistas')))
+app.use(express.static(path.join(__dirname, './../public')))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use((req, res, next) => {
   console.log(req.method + ' : ' + req.url)
   next()
 })
-app.set('views', path.join(__dirname, 'vistas'))
+app.set('views', path.join(__dirname, 'public'))
 
 // Define your GraphQL schema
 const schema = buildSchema(`
