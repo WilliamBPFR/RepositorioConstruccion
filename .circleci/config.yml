@@ -48,7 +48,6 @@ jobs:
     docker:
       - image: node:16.13
     environment:
-      GIT_TOKEN: $GIT_TOKEN
       VERCEL_ORG_ID: $VERCEL_ORG_ID
       VERCEL_PROJECT_ID: $VERCEL_PROJECT_ID
     steps:
