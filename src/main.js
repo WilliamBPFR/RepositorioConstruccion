@@ -236,13 +236,14 @@ async function sendEmail(asunto, mensaje, destinatario) {
     text: mensaje
   }
 
-  await transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log('Error al enviar el correo electrónico:', error)
-    } else {
-      console.log('Correo electrónico enviado:', info.response)
-    }
-  })
+    try{
+    await transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+      } else {
+      }
+    })
+  } catch (error) {
+  }
 }
 // Crear o actualizar un recordatorio
 app.post('/posted-new-reminder', async (req, res, next) => {
