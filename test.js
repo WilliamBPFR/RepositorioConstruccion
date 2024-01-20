@@ -18,15 +18,7 @@ const nuevaPersona = {
 jest.setTimeout(60000);
 
 beforeAll(async () => {
-  prisma = new PrismaClient(
-    {
-      datasources: {
-        db: {
-          url: config.DATABASE_URL,
-        },
-      },
-    }
-  );
+  prisma = new PrismaClient();
   await prisma.$connect();
   console.log('Conexión exitosa a la base de datos');
 

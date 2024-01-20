@@ -3,4 +3,3 @@ data/
 vars.json
 .vercel
 .env
-prisma/schema.prisma
